@@ -53,7 +53,7 @@ const scrapeImgUrls = async () => {
     page.setViewport({ width: 1080, height: 720 });
 
     console.log('🌎  Visiting web page...');
-    await page.goto('https://www.instagram.com/dgraney123');
+    await page.goto('https://www.instagram.com/yoona__lim/');
 
     console.log('⛏  Scraping image URLs...');
     await scrapeInfiniteScrollItems(page, extractItems, scrollDelay = 200);

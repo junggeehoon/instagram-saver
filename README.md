@@ -16,6 +16,6 @@ $ npm install
 3. Change the download path by setting `IMAGE_DIRECTORY` with a relative path 
 to your desired location
 ```javascript
-const IMAGE_DIRECTORY = '../../Pictures/covers'
+const IMAGE_DIRECTORY = './img'
 ```
 4. Run either using `node index.js`
