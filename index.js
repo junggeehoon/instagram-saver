@@ -63,13 +63,11 @@ const scrapeInfiniteScrollItems = async page => {
       await scrapPostImage(links);
       previousHeight = await page.evaluate('document.body.scrollHeight');
       await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
-      await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
+      await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`, {timeout: 7000});
       await page.waitFor(delay);
     }
     console.log(`👌  Done -- downloaded \x1b[36m${count}\x1b[0m album covers!`);
-  } catch(err) {
-    console.log(err);
-  }
+  } catch(err) {}
   return;
 }
 
