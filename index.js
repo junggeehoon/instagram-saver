@@ -11,14 +11,9 @@ const headless = false;
 let count = 0;
 
 const extractImage = imageNumber => {
-  const elements = document.querySelector(`li:nth-child(${imageNumber}) > div > div > div > div.KL4Bh > img`);
+  const elements = document.querySelectorAll(`li:nth-child(${imageNumber}) > div > div > div > div.KL4Bh > img`);
   return [...elements].map(el => el.src);
 }
-
-// const extractLink = () => {
-//   const elements = document.querySelectorAll('div._2z6nI > article > div > div > div > div > a');
-//   return [...elements].map(el => el.href);
-// }
 
 const downloadImg = async (options = {}) => {
   try {
@@ -52,47 +47,30 @@ const scrape = async page => {
         }));
         imageNumber++;
         await page.click('.coreSpriteRightChevron');
-        nextBtn = await page.evaluate("document.querySelectorAll('.coreSpriteRightChevron')");
+        nextBtn = await page.evaluate("document.querySelector('.coreSpriteRightChevron')");
       }
-      const lastImgs = await page.evaluate(imageNumber => {
-        const elements = document.querySelectorAll(`li:nth-child(${imageNumber}) > div > div > div > div.KL4Bh > img`);
-        return [...elements].map(el => el.src);
-      }, imageNumber);
-      await Promise.all(lastImgs.map(async file => {
-        await downloadImg({
-          url: file,
-          dest: IMAGE_DIRECTORY
-        });
-      }));
+      //div.zZYga > div > article > div._97aPb > div > div > div > div.tN4sQ.zRsZI > div > div.MreMs > div > ul > li:nth-child(6) > div > div > div > div > div.KL4Bh > img
+      //div.zZYga > div > article > div._97aPb > div > div > div > div.KL4Bh > img
+      //div.zZYga > div > article > div._97aPb > div > div > div.KL4Bh > img 나 홀로
+      //li:nth-child(6) > div > div > div > div > div.KL4Bh > img 마지막
+      //li:nth-child(5) > div > div > div > div.KL4Bh > img 마지막 바로 전
+      // console.log("제발 여기로 들어와라...");
+      // const lastImgs = await page.evaluate(imageNumber => {
+      //   const ha = document.querySelectorAll(`li:nth-child(${imageNumber}) > div > div > div > div.KL4Bh > img`);
+      //   return [...ha].map(el => el.src);
+      // }, imageNumber);
+      // await Promise.all(lastImgs.map(async file => {
+      //   await downloadImg({
+      //     url: file,
+      //     dest: IMAGE_DIRECTORY
+      //   });
+      // }));
+      // console.log("제발 여기도... 들어와라...");
       count += imageNumber;
       await page.waitFor(1000);
       await page.click('.coreSpriteRightPaginationArrow');
       await page.waitFor(1000);
     }
-    // let nextPost = await page.evaluate("document.querySelector('.coreSpriteRightPaginationArrow')");
-    // while (nextPost === undefined) {
-    //   let nextBtn = await page.evaluate("document.querySelector('.coreSpriteRightChevron')");
-    //   let imageNumber = 0;
-    //   while (nextBtn === undefined) {
-    //     imageNumber++;
-    //     const imgs = await page.evaluate(imageNumber => {
-    //       const elements = document.querySelectorAll(`li:nth-child(${imageNumber}) > div > div > div > div.KL4Bh > img`);
-    //       return [...elements].map(el => el.src);
-    //     }, imageNumber);
-    //     await Promise.all(imgs.map(async file => {
-    //       await downloadImg({
-    //         url: file,
-    //         dest: IMAGE_DIRECTORY
-    //       });
-    //     }));
-    //     count += imageNumber;
-    //     await page.click('.coreSpriteRightChevron');
-    //     nextBtn = await page.evaluate("document.querySelectorAll('.coreSpriteRightChevron')");
-    //   }
-    //   await page.click('.coreSpriteRightPaginationArrow');
-    //   await page.waitFor(1000);
-    //   nextPost = await page.evaluate("document.querySelector('.coreSpriteRightPaginationArrow')");
-    // }
   } catch (err) {
     console.log(err);
   }
