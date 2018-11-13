@@ -1,19 +1,13 @@
 const path = require('path');
 const puppeteer = require('puppeteer');
 const download = require('image-downloader');
-const instagramAccount = 'https://www.instagram.com/h.young_j/';
-const numberOfPosts = 27;
-// const instagramAccount = 'https://www.instagram.com/irene.redvelvet/?hl=ko';
+const instagramAccount = 'https://www.instagram.com/irene.redvelvet/?hl=ko';
+const numberOfPosts = 300;
 
 // Relative path to directory to download images
 const IMAGE_DIRECTORY = './img';
 const headless = false;
 let count = 0;
-
-const extractImage = imageNumber => {
-  const elements = document.querySelectorAll(`li:nth-child(${imageNumber}) > div > div > div > div.KL4Bh > img`);
-  return [...elements].map(el => el.src);
-}
 
 const downloadImg = async (options = {}) => {
   try {
@@ -26,6 +20,15 @@ const downloadImg = async (options = {}) => {
     console.log(err);
   }
 }
+//div.MreMs > div > ul > li:nth-child(1) > div > div > div > div > div.KL4Bh > img
+//div.MreMs > div > ul > li:nth-child(2) > div > div > div > div.KL4Bh > img
+//div.MreMs > div > ul > li:nth-child(1) > div > div > div > div > div.KL4Bh > img
+//div.MreMs > div > ul > li:nth-child(2) > div > div > div > div.KL4Bh > img
+//body > div:nth-child(15) > div > div.zZYga > div > article > div._97aPb > div > div > div > div.KL4Bh > img
+//body > div:nth-child(15) > div > div.zZYga > div > article > div._97aPb > div > div > div > div.KL4Bh > img
+//body > div:nth-child(15) > div > div.zZYga > div > article > div._97aPb > div > div > div > div.KL4Bh > img
+//div.MreMs > div > ul > li:nth-child(2) > div > div > div > div.KL4Bh > img
+//FFVAD
 
 const scrape = async page => {
   try {
@@ -49,23 +52,6 @@ const scrape = async page => {
         await page.click('.coreSpriteRightChevron');
         nextBtn = await page.evaluate("document.querySelector('.coreSpriteRightChevron')");
       }
-      //div.zZYga > div > article > div._97aPb > div > div > div > div.tN4sQ.zRsZI > div > div.MreMs > div > ul > li:nth-child(6) > div > div > div > div > div.KL4Bh > img
-      //div.zZYga > div > article > div._97aPb > div > div > div > div.KL4Bh > img
-      //div.zZYga > div > article > div._97aPb > div > div > div.KL4Bh > img 나 홀로
-      //li:nth-child(6) > div > div > div > div > div.KL4Bh > img 마지막
-      //li:nth-child(5) > div > div > div > div.KL4Bh > img 마지막 바로 전
-      // console.log("제발 여기로 들어와라...");
-      // const lastImgs = await page.evaluate(imageNumber => {
-      //   const ha = document.querySelectorAll(`li:nth-child(${imageNumber}) > div > div > div > div.KL4Bh > img`);
-      //   return [...ha].map(el => el.src);
-      // }, imageNumber);
-      // await Promise.all(lastImgs.map(async file => {
-      //   await downloadImg({
-      //     url: file,
-      //     dest: IMAGE_DIRECTORY
-      //   });
-      // }));
-      // console.log("제발 여기도... 들어와라...");
       count += imageNumber;
       await page.waitFor(1000);
       await page.click('.coreSpriteRightPaginationArrow');
