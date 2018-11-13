@@ -28,12 +28,14 @@ const scrape = async page => {
     for (let i = 0; i < numberOfPosts; i++) {
       let nextBtn = await page.evaluate("document.querySelector('.coreSpriteRightChevron')");
       let imageNumber = 1;
+
       if (nextBtn !== undefined) {
         // With one image from post
         const imgs = await page.evaluate(() => {
           const elements = document.querySelectorAll('div._97aPb IMG');
           return [...elements].map(el => el.src);
         });
+        
         await Promise.all(imgs.map(async file => {
           await downloadImg({
             url: file,
@@ -48,12 +50,14 @@ const scrape = async page => {
             const elements = document.querySelectorAll(`div.MreMs > div > ul > li:nth-child(${imageNumber}) IMG`);
             return [...elements].map(el => el.src);
           }, imageNumber);
+
           await Promise.all(imgs.map(async file => {
             await downloadImg({
               url: file,
               dest: IMAGE_DIRECTORY
             });
           }));
+
           imageNumber++;
           await page.click('.coreSpriteRightChevron');
           nextBtn = await page.evaluate("document.querySelector('.coreSpriteRightChevron')");
@@ -63,6 +67,7 @@ const scrape = async page => {
           const elements = document.querySelectorAll(`div.MreMs > div > ul > li:nth-child(${imageNumber}) IMG`);
           return [...elements].map(el => el.src);
         }, imageNumber);
+
         await Promise.all(imgs.map(async file => {
           await downloadImg({
             url: file,
@@ -70,10 +75,11 @@ const scrape = async page => {
           });
         }));
       }
+
       count += imageNumber;
       if (i !== numberOfPosts - 1) {
         await page.click('.coreSpriteRightPaginationArrow');
-        await page.waitFor(1000);
+        await page.waitFor(800);
       }
     }
   } catch (err) {
@@ -89,6 +95,7 @@ const scrapeImgUrls = async () => {
     const browser = await puppeteer.launch({
       headless: headless
     });
+
     const page = await browser.newPage();
     page.setViewport({
       width: 1080,
@@ -106,7 +113,12 @@ const scrapeImgUrls = async () => {
     console.log(`👌  Done -- downloaded \x1b[36m${count}\x1b[0m album covers!`);
     let timeTake = time2 - time1;
     let unit = 'milliseconds';
-    if (timeTake > 60000) {
+
+    if (timeTake >= 1000 && timeTake < 60000) {
+      timeTake = Math.round(timeTake / 1000);
+      unit = 'seconds';
+    }
+    if (timeTake >= 60000) {
       timeTake = Math.round(timeTake / 60000);
       unit = 'minutes';
     }
