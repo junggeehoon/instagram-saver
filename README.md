@@ -27,4 +27,4 @@ const config = {
 
 module.exports = config;
 ```
-5. Run either using `node index.js`
+5. Run using `node index.js`
