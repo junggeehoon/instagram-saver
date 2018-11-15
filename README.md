@@ -13,12 +13,12 @@ $ git clone https://github.com/junggeehoon/instagram-saver
 ```
 $ npm install
 ```
-3. Change the download path by setting `IMAGE_DIRECTORY` with a relative path 
-to your desired location
+3. Make `img` folder inside the project folder or you can use your own folder
+by setting `./img` with a relative path to your desired location
 ```javascript
 const IMAGE_DIRECTORY = './img'
 ```
-4. Make config.js inside the project folder like under:
+4. In case of private instagram account, make `config.js` file inside the project folder like under:
 ```javascript
 const config = {
   email: 'YOUR_INSTAGRAM_EMAIL',
