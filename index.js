@@ -1,8 +1,9 @@
 const path = require('path');
 const puppeteer = require('puppeteer');
 const download = require('image-downloader');
-const instagramAccount = 'https://www.instagram.com/irene.redvelvet/';
-const numberOfPosts = 100;
+const config = require('./config');
+const instagramAccount = 'https://www.instagram.com/irene.redvelvet/?hl=ko';
+const numberOfPosts = 30;
 
 // Relative path to directory to download images
 const IMAGE_DIRECTORY = './img';
@@ -105,6 +106,28 @@ const scrapeImgUrls = async () => {
     console.log('🌎  Visiting web page...');
     await page.goto(instagramAccount);
 
+    let isPrivate = await page.evaluate("document.querySelector('#react-root > section > main > div > div > article > div > div > h2')");
+
+    if (isPrivate === undefined) {
+      isPrivate = await page.evaluate(() => {
+        const header = document.querySelectorAll('#react-root > section > main > div > div > article > div > div > h2');
+        return header[0].innerHTML;
+      })
+    }
+    
+    if (isPrivate === 'This Account is Private') {
+      await page.click('#react-root > section > main > div > div > article > div > div > div > a');
+      await page.waitFor(500);
+      await page.type('#react-root > section > main > div > article > div > div:nth-child(1) > div > form > div:nth-child(1) > div > div > input', config.email);
+      await page.type('#react-root > section > main > div > article > div > div:nth-child(1) > div > form > div:nth-child(2) > div > div > input', config.password);
+      await page.click('#react-root > section > main > div > article > div > div:nth-child(1) > div > form > div:nth-child(3) > button');
+      await page.waitForSelector('body > div:nth-child(13) > div > div > div > div.mt3GC > button.aOOlW.HoLwm');
+      await page.click('body > div:nth-child(13) > div > div > div > div.mt3GC > button.aOOlW.HoLwm');
+
+      console.log("Loginned to your account!");
+      await page.goto(instagramAccount);
+    }
+
     console.log('⛏  Scraping image URLs...');
     await scrape(page);
 
@@ -122,6 +145,7 @@ const scrapeImgUrls = async () => {
       timeTake = Math.round(timeTake / 60000);
       unit = 'minutes';
     }
+
     console.log(`It took about ${timeTake} ${unit}!`);
     return browser.close();
   } catch (err) {

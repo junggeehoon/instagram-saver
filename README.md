@@ -18,4 +18,13 @@ to your desired location
 ```javascript
 const IMAGE_DIRECTORY = './img'
 ```
-4. Run either using `node index.js`
+4. Make config.js inside the project folder like under:
+```javascript
+const config = {
+  email: 'YOUR_INSTAGRAM_EMAIL',
+  password: 'YOUR_INSTAGRAM_PASSWORD'
+}
+
+module.exports = config;
+```
+5. Run either using `node index.js`
