@@ -2,8 +2,8 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const download = require('image-downloader');
 const config = require('./config');
-const instagramAccount = 'https://www.instagram.com/irene.redvelvet/?hl=ko';
-const numberOfPosts = 30;
+const instagramAccount = 'https://www.instagram.com/yoona__lim/'; // Instagram account url
+const numberOfPosts = 10; // Number of post that you want to save
 
 // Relative path to directory to download images
 const IMAGE_DIRECTORY = './img';
@@ -25,7 +25,7 @@ const downloadImg = async (options = {}) => {
 const scrape = async page => {
   try {
     await page.click('div._2z6nI > article > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > a > div.eLAPa > div._9AhH0');
-    await page.waitForSelector('.coreSpriteRightChevron');
+    await page.waitFor(500);
     for (let i = 0; i < numberOfPosts; i++) {
       let nextBtn = await page.evaluate("document.querySelector('.coreSpriteRightChevron')");
       let imageNumber = 1;
@@ -131,7 +131,7 @@ const scrapeImgUrls = async () => {
     console.log('⛏  Scraping image URLs...');
     await scrape(page);
 
-    const time2 = Date.now()
+    const time2 = Date.now();
 
     console.log(`👌  Done -- downloaded \x1b[36m${count}\x1b[0m album covers!`);
     let timeTake = time2 - time1;
