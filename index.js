@@ -2,7 +2,7 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const download = require('image-downloader');
 const config = require('./config');
-const instagramAccount = 'https://www.instagram.com/hi_hyein329/?hl=ko'; // Instagram account url
+const instagramAccount = 'https://www.instagram.com/yoona__lim/'; // Instagram account url
 const numberOfPosts = 10; // Number of post that you want to save
 
 // Relative path to directory to download images
