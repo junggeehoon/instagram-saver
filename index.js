@@ -2,7 +2,7 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const download = require('image-downloader');
 const config = require('./config');
-const instagramAccount = 'https://www.instagram.com/yoona__lim/'; // Instagram account url
+const instagramAccount = 'https://www.instagram.com/hi_hyein329/?hl=ko'; // Instagram account url
 const numberOfPosts = 10; // Number of post that you want to save
 
 // Relative path to directory to download images
@@ -25,7 +25,7 @@ const downloadImg = async (options = {}) => {
 const scrape = async page => {
   try {
     await page.click('div._2z6nI > article > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > a > div.eLAPa > div._9AhH0');
-    await page.waitFor(500);
+    await page.waitFor(600);
     for (let i = 0; i < numberOfPosts; i++) {
       let nextBtn = await page.evaluate("document.querySelector('.coreSpriteRightChevron')");
       let imageNumber = 1;
@@ -45,6 +45,7 @@ const scrape = async page => {
         }));
       } else {
         // More than one image from post
+        //div._97aPb > div > div > div > div.oJub8 > div > div > video
         while (nextBtn === undefined) {
           // Save images from post when next button exist
           const imgs = await page.evaluate(imageNumber => {
@@ -80,7 +81,7 @@ const scrape = async page => {
       count += imageNumber;
       if (i !== numberOfPosts - 1) {
         await page.click('.coreSpriteRightPaginationArrow');
-        await page.waitFor(800);
+        await page.waitFor(900);
       }
     }
   } catch (err) {
@@ -115,9 +116,9 @@ const scrapeImgUrls = async () => {
       })
     }
     
-    if (isPrivate === 'This Account is Private') {
+    if (isPrivate === 'This Account is Private' || isPrivate === '비공개 계정입니다') {
       await page.click('#react-root > section > main > div > div > article > div > div > div > a');
-      await page.waitFor(500);
+      await page.waitFor(800);
       await page.type('#react-root > section > main > div > article > div > div:nth-child(1) > div > form > div:nth-child(1) > div > div > input', config.email);
       await page.type('#react-root > section > main > div > article > div > div:nth-child(1) > div > form > div:nth-child(2) > div > div > input', config.password);
       await page.click('#react-root > section > main > div > article > div > div:nth-child(1) > div > form > div:nth-child(3) > button');
