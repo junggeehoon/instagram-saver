@@ -5,7 +5,7 @@ const config = require('./config');
 const IMAGE_DIRECTORY = './img'; // Relative path to directory to download images
 let count = 0;
 
-const instagramAccount = 'https://www.instagram.com/yoona__lim/'; // Instagram account url
+const instagramAccount = 'https://www.instagram.com/yoona__lim/?hl=ko'; // Instagram account url
 const numberOfPosts = 10; // Number of post that you want to save
 const headless = false;
 
@@ -107,7 +107,7 @@ const scrapeImgUrls = async () => {
     console.log('🌎  Visiting web page...');
     await page.goto(instagramAccount);
 
-    const isPrivate = await page.evaluate("document.querySelector('#react-root > section > main > div > div > article > div > div > h2')");
+    let isPrivate = await page.evaluate("document.querySelector('#react-root > section > main > div > div > article > div > div > h2')");
 
     if (isPrivate === undefined) {
       isPrivate = await page.evaluate(() => {
