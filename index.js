@@ -2,13 +2,12 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const download = require('image-downloader');
 const config = require('./config');
+const IMAGE_DIRECTORY = './img'; // Relative path to directory to download images
+let count = 0;
+
 const instagramAccount = 'https://www.instagram.com/yoona__lim/'; // Instagram account url
 const numberOfPosts = 10; // Number of post that you want to save
-
-// Relative path to directory to download images
-const IMAGE_DIRECTORY = './img';
 const headless = false;
-let count = 0;
 
 const downloadImg = async (options = {}) => {
   try {
@@ -27,11 +26,12 @@ const scrape = async page => {
     await page.click('div._2z6nI > article > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > a > div.eLAPa > div._9AhH0');
     await page.waitFor(600);
     for (let i = 0; i < numberOfPosts; i++) {
+      await page.waitFor(400);
       let nextBtn = await page.evaluate("document.querySelector('.coreSpriteRightChevron')");
       let imageNumber = 1;
 
       if (nextBtn !== undefined) {
-        // With one image from post
+        // Case of single image post
         const imgs = await page.evaluate(() => {
           const elements = document.querySelectorAll('div._97aPb IMG');
           return [...elements].map(el => el.src);
@@ -44,10 +44,10 @@ const scrape = async page => {
           });
         }));
       } else {
-        // More than one image from post
+        // Case of multiple image post
         //div._97aPb > div > div > div > div.oJub8 > div > div > video
         while (nextBtn === undefined) {
-          // Save images from post when next button exist
+          // Save images from post while next button exist
           const imgs = await page.evaluate(imageNumber => {
             const elements = document.querySelectorAll(`div.MreMs > div > ul > li:nth-child(${imageNumber}) IMG`);
             return [...elements].map(el => el.src);
@@ -81,7 +81,7 @@ const scrape = async page => {
       count += imageNumber;
       if (i !== numberOfPosts - 1) {
         await page.click('.coreSpriteRightPaginationArrow');
-        await page.waitFor(900);
+        await page.waitFor(400);
       }
     }
   } catch (err) {
@@ -107,7 +107,7 @@ const scrapeImgUrls = async () => {
     console.log('🌎  Visiting web page...');
     await page.goto(instagramAccount);
 
-    let isPrivate = await page.evaluate("document.querySelector('#react-root > section > main > div > div > article > div > div > h2')");
+    const isPrivate = await page.evaluate("document.querySelector('#react-root > section > main > div > div > article > div > div > h2')");
 
     if (isPrivate === undefined) {
       isPrivate = await page.evaluate(() => {
@@ -119,8 +119,10 @@ const scrapeImgUrls = async () => {
     if (isPrivate === 'This Account is Private' || isPrivate === '비공개 계정입니다') {
       await page.click('#react-root > section > main > div > div > article > div > div > div > a');
       await page.waitFor(800);
+      
       await page.type('#react-root > section > main > div > article > div > div:nth-child(1) > div > form > div:nth-child(1) > div > div > input', config.email);
       await page.type('#react-root > section > main > div > article > div > div:nth-child(1) > div > form > div:nth-child(2) > div > div > input', config.password);
+
       await page.click('#react-root > section > main > div > article > div > div:nth-child(1) > div > form > div:nth-child(3) > button');
       await page.waitForSelector('body > div:nth-child(13) > div > div > div > div.mt3GC > button.aOOlW.HoLwm');
       await page.click('body > div:nth-child(13) > div > div > div > div.mt3GC > button.aOOlW.HoLwm');
